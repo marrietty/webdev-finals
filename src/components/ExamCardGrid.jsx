@@ -1,6 +1,6 @@
 import StatusBadge from './StatusBadge';
 
-export default function ExamCardGrid({ exams, rooms, invigilators, onSelect, onDelete, onAssign }) {
+export default function ExamCardGrid({ exams, rooms, invigilators, onSelect, onDelete, onAssign, onPlanSeating }) {
   const roomMap = Object.fromEntries((rooms ?? []).map((r) => [r.id, r]));
   const invMap = Object.fromEntries((invigilators ?? []).map((i) => [i.id, i]));
 
@@ -21,57 +21,64 @@ export default function ExamCardGrid({ exams, rooms, invigilators, onSelect, onD
           <div
             key={exam.id}
             onClick={() => onSelect(exam)}
-            className="cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+            className="cursor-pointer rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm transition-colors transition-shadow hover:shadow-md dark:hover:shadow-slate-950/20 duration-200"
           >
             <div className="flex items-start justify-between gap-2">
               <div>
-                <p className="font-medium text-slate-900">{exam.courseCode}</p>
-                <p className="text-sm text-slate-500">{exam.courseName}</p>
+                <p className="font-medium text-slate-900 dark:text-slate-100">{exam.courseCode}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">{exam.courseName}</p>
               </div>
               <StatusBadge status={exam.status} />
             </div>
 
-            <dl className="mt-4 grid grid-cols-2 gap-y-2 font-mono text-sm text-slate-700">
-              <dt className="text-slate-400">Date</dt>
+            <dl className="mt-4 grid grid-cols-2 gap-y-2 font-mono text-sm text-slate-700 dark:text-slate-300">
+              <dt className="text-slate-400 dark:text-slate-500">Date</dt>
               <dd>{new Date(`${exam.date}T00:00:00`).toLocaleDateString('en-PH', { month: 'short', day: 'numeric' })}</dd>
-              <dt className="text-slate-400">Time</dt>
+              <dt className="text-slate-400 dark:text-slate-500">Time</dt>
               <dd>{exam.time}</dd>
-              <dt className="text-slate-400">Duration</dt>
+              <dt className="text-slate-400 dark:text-slate-500">Duration</dt>
               <dd>{exam.duration} min</dd>
-              <dt className="text-slate-400">Students</dt>
+              <dt className="text-slate-400 dark:text-slate-500">Students</dt>
               <dd>{exam.studentCount}</dd>
             </dl>
 
             {/* Assignment badges */}
             <div className="mt-3 flex flex-wrap gap-1">
               {room ? (
-                <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                <span className="rounded-full bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-350">
                   {room.building} {room.roomNumber}
                 </span>
               ) : (
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400">No room</span>
+                <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400 dark:text-slate-500">No room</span>
               )}
               {inv ? (
-                <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
+                <span className="rounded-full bg-indigo-50 dark:bg-indigo-950/30 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:text-indigo-350">
                   {inv.name}
                 </span>
               ) : (
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-400">No invigilator</span>
+                <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400 dark:text-slate-500">No invigilator</span>
               )}
             </div>
 
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
+                onClick={(e) => { e.stopPropagation(); onPlanSeating(exam); }}
+                className="flex-1 rounded-md border border-emerald-200 dark:border-emerald-900/40 px-2 py-1.5 text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-colors duration-150"
+              >
+                Plan Seating
+              </button>
+              <button
+                type="button"
                 onClick={(e) => { e.stopPropagation(); onAssign(exam); }}
-                className="flex-1 rounded-md border border-indigo-200 px-2 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-50"
+                className="flex-1 rounded-md border border-indigo-200 dark:border-indigo-900/40 px-2 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/20 transition-colors duration-150"
               >
                 Assign
               </button>
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); onDelete(exam); }}
-                className="flex-1 rounded-md border border-rose-200 px-2 py-1.5 text-sm font-medium text-rose-600 hover:bg-rose-50"
+                className="flex-1 rounded-md border border-rose-200 dark:border-rose-900/40 px-2 py-1.5 text-sm font-medium text-rose-600 dark:text-rose-450 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors duration-150"
               >
                 Delete
               </button>

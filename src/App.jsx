@@ -1,8 +1,9 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useExams } from './hooks/useExams';
 import { useRooms } from './hooks/useRooms';
 import { useInvigilators } from './hooks/useInvigilators';
 import { useToasts } from './hooks/useToasts';
+import { Sun, Moon } from 'lucide-react';
 
 import KpiCards from './components/KpiCards';
 import ViewToggle from './components/ViewToggle';
@@ -19,6 +20,7 @@ import WorkloadPanel from './components/WorkloadPanel';
 import AssignModal from './components/AssignModal';
 import RoomManagerModal from './components/RoomManagerModal';
 import InvigilatorManagerModal from './components/InvigilatorManagerModal';
+import SeatingPlannerModal from './components/SeatingPlannerModal';
 
 function getInitialView() {
   if (typeof window === 'undefined') return 'table';
@@ -26,6 +28,28 @@ function getInitialView() {
 }
 
 export default function App() {
+  // ── Theme state & synchronization ──────────────────────────────
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('examgrid:theme') || 'light';
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('examgrid:theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
   // ── Core data hooks ───────────────────────────────────────────────
   const { exams, addExam, updateExam, deleteExam, assignRoom, assignInvigilator, kpis } = useExams();
   const { rooms, addRoom, updateRoom, deleteRoom } = useRooms();
@@ -52,6 +76,7 @@ export default function App() {
   const [assignTarget, setAssignTarget] = useState(null);  // exam to assign resources to
   const [roomManagerOpen, setRoomManagerOpen] = useState(false);
   const [invigilatorManagerOpen, setInvigilatorManagerOpen] = useState(false);
+  const [seatingPlannerTarget, setSeatingPlannerTarget] = useState(null); // exam for seating planner
 
   // ── Conflict center state ─────────────────────────────────────────
   const [conflicts, setConflicts] = useState([]);
@@ -123,21 +148,34 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* ── Header ──────────────────────────────────────────────────── */}
-      <header className="border-b border-slate-200 bg-white">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-colors duration-200">
         <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl font-semibold text-slate-900">ExamGrid</h1>
-              <p className="text-sm text-slate-500">Level 2 — Scheduling Workspace</p>
+              <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">ExamGrid</h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Level 2 — Scheduling Workspace</p>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                id="btn-theme-toggle"
+                onClick={toggleTheme}
+                aria-label="Toggle theme"
+                className="flex items-center justify-center rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="h-5 w-5 text-amber-500 hover:rotate-45 transition-transform duration-200" />
+                ) : (
+                  <Moon className="h-5 w-5 text-indigo-600 hover:-rotate-12 transition-transform duration-200" />
+                )}
+              </button>
               <button
                 type="button"
                 id="btn-manage-rooms"
                 onClick={() => setRoomManagerOpen(true)}
-                className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200"
               >
                 Manage Rooms
               </button>
@@ -145,7 +183,7 @@ export default function App() {
                 type="button"
                 id="btn-manage-invigilators"
                 onClick={() => setInvigilatorManagerOpen(true)}
-                className="rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-200"
               >
                 Manage Invigilators
               </button>
@@ -153,7 +191,7 @@ export default function App() {
                 type="button"
                 id="btn-new-exam"
                 onClick={openCreateForm}
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 transition-colors duration-200"
               >
                 + New Exam
               </button>
@@ -194,6 +232,7 @@ export default function App() {
             onSelect={openDrawer}
             onDelete={setExamPendingDelete}
             onAssign={setAssignTarget}
+            onPlanSeating={setSeatingPlannerTarget}
           />
         )}
         {view === 'cards' && (
@@ -204,6 +243,7 @@ export default function App() {
             onSelect={openDrawer}
             onDelete={setExamPendingDelete}
             onAssign={setAssignTarget}
+            onPlanSeating={setSeatingPlannerTarget}
           />
         )}
         {view === 'timetable' && (
@@ -256,6 +296,13 @@ export default function App() {
         onUpdate={updateInvigilator}
         onDelete={deleteInvigilator}
         onClose={() => setInvigilatorManagerOpen(false)}
+      />
+
+      <SeatingPlannerModal
+        open={!!seatingPlannerTarget}
+        exam={seatingPlannerTarget}
+        room={seatingPlannerTarget && seatingPlannerTarget.roomId ? rooms.find(r => r.id === seatingPlannerTarget.roomId) : null}
+        onClose={() => setSeatingPlannerTarget(null)}
       />
 
       <ConfirmDialog

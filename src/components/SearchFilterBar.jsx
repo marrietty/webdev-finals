@@ -61,10 +61,10 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
   }, [result]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 shadow-sm transition-colors duration-200">
       {/* Search */}
       <div className="relative flex-1 min-w-[180px]">
-        <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
+        <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400 dark:text-slate-500">
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <circle cx={11} cy={11} r={8} />
             <path strokeLinecap="round" d="m21 21-4.35-4.35" />
@@ -76,7 +76,7 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
           placeholder="Search by course code or name…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="block w-full rounded-md border border-slate-200 py-2 pl-9 pr-3 text-sm text-slate-800 placeholder-slate-400 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+          className="block w-full rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-2 pl-9 pr-3 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-colors duration-200"
         />
       </div>
 
@@ -85,7 +85,7 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
         id="status-filter"
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+        className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-colors duration-200"
       >
         {STATUS_OPTIONS.map((s) => (
           <option key={s} value={s}>
@@ -99,7 +99,7 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
         id="room-filter"
         value={roomFilter}
         onChange={(e) => setRoomFilter(e.target.value)}
-        className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+        className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-colors duration-200"
       >
         <option value="all">All rooms</option>
         <option value="assigned">Room assigned</option>
@@ -111,7 +111,7 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
         id="sort-select"
         value={sort}
         onChange={(e) => setSort(e.target.value)}
-        className="rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+        className="rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 focus:border-indigo-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 transition-colors duration-200"
       >
         {SORT_OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>
@@ -120,7 +120,7 @@ export default function SearchFilterBar({ exams, rooms, onFiltered }) {
         ))}
       </select>
 
-      <span className="ml-auto text-xs text-slate-400">
+      <span className="ml-auto text-xs text-slate-400 dark:text-slate-500">
         {result.length} result{result.length !== 1 ? 's' : ''}
       </span>
     </div>

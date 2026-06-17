@@ -60,26 +60,26 @@ export default function AssignModal({
   if (!open || !exam) return null;
 
   const selClass =
-    'block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-800 ' +
-    'focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
+    'block w-full rounded-md border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-800 dark:text-slate-100 ' +
+    'focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors duration-200';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="absolute inset-0 bg-slate-900/40" onClick={onClose} />
       <form
         onSubmit={handleSubmit}
-        className="relative w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className="relative w-full max-w-md rounded-xl bg-white dark:bg-slate-900 p-6 shadow-xl border border-slate-200 dark:border-slate-800 transition-colors duration-200"
       >
-        <h3 className="text-lg font-semibold text-slate-900">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           Assign Resources
         </h3>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           {exam.courseCode} — {exam.date} at {exam.time}
         </p>
 
         {errors.length > 0 && (
-          <div className="mt-4 rounded-md border border-rose-200 bg-rose-50 p-3">
-            <ul className="space-y-1 text-sm text-rose-700 list-disc list-inside">
+          <div className="mt-4 rounded-md border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/20 p-3">
+            <ul className="space-y-1 text-sm text-rose-700 dark:text-rose-300 list-disc list-inside">
               {errors.map((err, i) => <li key={i}>{err}</li>)}
             </ul>
           </div>
@@ -88,7 +88,7 @@ export default function AssignModal({
         <div className="mt-5 space-y-4">
           {/* Room selector */}
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">
+            <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
               Room
             </span>
             <select
@@ -109,7 +109,7 @@ export default function AssignModal({
 
           {/* Invigilator selector */}
           <label className="block">
-            <span className="mb-1 block text-sm font-medium text-slate-700">
+            <span className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
               Invigilator
             </span>
             <select
@@ -132,7 +132,7 @@ export default function AssignModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+            className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             Cancel
           </button>
@@ -140,7 +140,7 @@ export default function AssignModal({
             type="submit"
             disabled={saving}
             id="assign-save-btn"
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-md bg-indigo-600 dark:bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 dark:hover:bg-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 transition-colors"
           >
             {saving ? 'Saving…' : 'Save assignment'}
           </button>
