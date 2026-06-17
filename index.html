@@ -4,7 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hackathon Suite - React + Vite + Tailwind</title>
+    <title>ExamGrid — Smart Exam Scheduling</title>
+    <!-- Dark-mode flash prevention: must run before first paint -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('examgrid:theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

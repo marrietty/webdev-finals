@@ -51,16 +51,19 @@ export default function App() {
   }, []);
 
   // ── Core data hooks ───────────────────────────────────────────────
-  const { exams, addExam, updateExam, deleteExam, assignRoom, assignInvigilator, kpis } = useExams();
-  const { rooms, addRoom, updateRoom, deleteRoom } = useRooms();
+  const { exams, isLoading: examsLoading, addExam, updateExam, deleteExam, assignRoom, assignInvigilator, saveSeatingPlan, kpis } = useExams();
+  const { rooms, isLoading: roomsLoading, addRoom, updateRoom, deleteRoom } = useRooms();
   const {
     invigilators,
+    isLoading: invLoading,
     addInvigilator,
     updateInvigilator,
     deleteInvigilator,
     syncAssignedHours,
   } = useInvigilators();
   const { toasts, showToast, dismissToast } = useToasts();
+
+  const isLoading = examsLoading || roomsLoading || invLoading;
 
   // ── View state ────────────────────────────────────────────────────
   const [view, setView] = useState(getInitialView);
@@ -201,6 +204,16 @@ export default function App() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6">
+        {/* Global loading skeleton */}
+        {isLoading && (
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-5 py-4 shadow-sm text-sm text-slate-500 dark:text-slate-400">
+            <svg className="h-4 w-4 animate-spin text-indigo-500" viewBox="0 0 24 24" fill="none">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+            Loading data from database…
+          </div>
+        )}
         {/* KPIs */}
         <KpiCards kpis={kpis} />
 
