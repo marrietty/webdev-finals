@@ -25,11 +25,21 @@ export function validateExam(data, existingExams = [], excludeId = null) {
   const studentCount = Number(data.studentCount);
   if (!Number.isFinite(studentCount) || studentCount <= 0) {
     errors.push('Student count must be a positive number.');
+  } else if (!Number.isInteger(studentCount)) {
+    errors.push('Student count must be a whole number.');
+  } else if (studentCount > 100000) {
+    // BUG FIX: Massive student count guard — prevents runaway allocation memory usage
+    errors.push('Student count must be 100,000 or fewer.');
   }
 
   const duration = Number(data.duration);
   if (!Number.isFinite(duration) || duration <= 0) {
     errors.push('Duration must be a positive number of minutes.');
+  } else if (!Number.isInteger(duration)) {
+    errors.push('Duration must be a whole number of minutes.');
+  } else if (duration > 1440) {
+    // BUG FIX: duration 0 is caught above; extreme values (> 24h) are also blocked
+    errors.push('Duration cannot exceed 1,440 minutes (24 hours).');
   }
 
   const isDuplicate = existingExams.some(

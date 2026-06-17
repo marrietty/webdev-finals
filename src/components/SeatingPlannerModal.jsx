@@ -15,7 +15,7 @@ export default function SeatingPlannerModal({ open, exam, room, onClose }) {
     return generateMockStudents(exam.studentCount);
   }, [exam]);
 
-  const { grid, allocate, moveStudent, undo, redo, canUndo, canRedo, reset } = useSeatingPlanner(room);
+  const { grid, dimensions, allocate, moveStudent, undo, redo, canUndo, canRedo, reset } = useSeatingPlanner(room);
   
   const [allocationResult, setAllocationResult] = useState(null);
   const busyRef = useRef(false);
@@ -46,14 +46,25 @@ export default function SeatingPlannerModal({ open, exam, room, onClose }) {
 
   const handleSeatClick = (seatId) => {
     if (busyRef.current) return;
-    
+
+    const clickedSeat = grid.find((s) => s.id === seatId);
+    if (!clickedSeat) return;
+
     if (selectedSeatId === null) {
-      setSelectedSeatId(seatId);
+      // Only allow selecting a seat that actually has a student (for swap) or is available/accessible
+      if (clickedSeat.status !== 'blocked') {
+        setSelectedSeatId(seatId);
+      }
     } else {
       if (selectedSeatId === seatId) {
-        setSelectedSeatId(null); // deselect
+        setSelectedSeatId(null); // deselect same seat
       } else {
-        moveStudent(selectedSeatId, seatId);
+        // moveStudent returns false if target is blocked or invalid
+        const moved = moveStudent(selectedSeatId, seatId);
+        if (!moved && clickedSeat.status === 'blocked') {
+          // Keep selection active so user can try another seat
+          return;
+        }
         setSelectedSeatId(null);
       }
     }
@@ -229,6 +240,7 @@ export default function SeatingPlannerModal({ open, exam, room, onClose }) {
                 <SeatingGrid
                   room={room}
                   grid={grid}
+                  dimensions={dimensions}
                   onSeatClick={handleSeatClick}
                   selectedSeatId={selectedSeatId}
                 />

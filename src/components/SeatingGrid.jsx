@@ -8,16 +8,16 @@ const statusColors = {
   conflicting: 'bg-rose-100 dark:bg-rose-900 border-rose-400 dark:border-rose-500',
 };
 
-export default function SeatingGrid({ room, grid, onSeatClick, selectedSeatId }) {
-  if (!room || !room.grid) {
+export default function SeatingGrid({ room, grid, dimensions, onSeatClick, selectedSeatId }) {
+  if (!room || !grid || grid.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg">
+      <div className="flex items-center justify-center h-64 text-slate-500 dark:text-slate-400 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg w-full">
         No grid layout defined for this room.
       </div>
     );
   }
 
-  const { columns } = room.grid;
+  const { columns } = dimensions || { columns: 5 };
 
   return (
     <div className="overflow-auto bg-slate-100 dark:bg-slate-950 p-6 rounded-lg border border-slate-200 dark:border-slate-800 shadow-inner">
